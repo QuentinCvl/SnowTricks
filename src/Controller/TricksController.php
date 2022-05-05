@@ -8,13 +8,15 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TricksController extends AbstractController
 {
-    /**
-     * @Route("/tricks", name="app_tricks")
-     */
-    public function index(): Response
-    {
-        return $this->render('tricks/index.html.twig', [
-            'controller_name' => 'TricksController',
-        ]);
-    }
+  /**
+   * @Route("/tricks/detail/{tricksId}", name="tricks_detail")
+   */
+  public function index($tricksId = false): Response
+  {
+    return $this->render('tricks/detail.html.twig', [
+      'controller_name' => 'TricksController',
+      'title' => "Tricks N°$tricksId",
+      'id' => $tricksId
+    ]);
+  }
 }
