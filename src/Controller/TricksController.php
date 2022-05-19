@@ -9,14 +9,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class TricksController extends AbstractController
 {
   /**
-   * @Route("/tricks/detail/{tricksId}", name="tricks_detail")
+   * @Route("/tricks/detail/{slug}", name="tricks_detail")
    */
-  public function index($tricksId = false): Response
+  public function index($slug = false): Response
   {
     return $this->render('tricks/detail.html.twig', [
       'controller_name' => 'TricksController',
-      'title' => "Tricks N°$tricksId",
-      'id' => $tricksId
+      'title' => "Tricks $slug",
+      'slug' => $slug
     ]);
   }
 }

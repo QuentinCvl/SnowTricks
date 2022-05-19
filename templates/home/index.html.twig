@@ -4,6 +4,34 @@
 {% endblock %}
 
 {% block body %}
-  {# foreach tricks, display #}
+  <div class="container my-5">
+    <section class="row tricks_list">
+      {# foreach tricks, display #}
+      <div class="card tricks">
+        <img src="https://dummyimage.com/300x200" class="card-img-top img-fluid" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">Tricks Name</h5>
+          <p class="card-text">Some quick example text to build on the card title and make up the bulk of
+            the card's content.</p>
+        </div>
+      </div>
 
+      <div class="col-3 tricks mb-3">
+        <div class="tricks_img">
+          <img src="https://dummyimage.com/300x200" alt="">
+        </div>
+        <div class="tricks_nav">
+          <span class="tricks_name">Flip</span>
+          {# if user is connected #}
+          <span class="tricks_edit">
+            <i class="bi bi-pen-fill"></i>
+          </span>
+          <span class="tricks_delete">
+            <i class="bi bi-trash3-fill"></i>
+          </span>
+          {# endif #}
+        </div>
+      </div>
+    </section>
+  </div>
 {% endblock %}
