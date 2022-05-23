@@ -19,31 +19,51 @@ header {
 header .navbar .navbar-brand img.logo {
     max-width: 250px;
 }
+
 header .navbar .navbar-nav a {
-    color: #d9d9d9!important;
+    color: #d9d9d9;
 }
 
-header .navbar-nav a span {
-    display: block;
+header .navbar .navbar-nav a:hover {
+    color: white;
 }
-
-header .navbar-nav a i {
+/* Mobile menu */
+header .mobile_menu {
     display: none;
+    background-color: rgb(50, 87, 133);
+    font-size: 26px;
+    padding: 5px 15px;
 }
 
+header .mobile_menu a i {
+    font-size: 26px;
+}
+
+header .mobile_menu .navbar-nav {
+    width: 100%;
+    justify-content: space-between;
+}
+/* End of Mobile menu */
 .to-tricks {
     position: absolute;
-    bottom: 50px;
+    bottom: 60px;
     right: 50px;
 }
 
 .to-tricks i {
     font-size: 50px;
+    color: #d9d9d9;
 }
-/* Tricks vignette */
+
+.to-tricks i:hover {
+    font-size: 50px;
+    color: #868e96;
+}
+/* Tricks Home display  */
 div.row.tricks_list {
     justify-content: space-between;
 }
+
 .tricks {
     width: 18rem;
     box-shadow: 4px -4px 12px 0 #2b2b2b;
@@ -62,35 +82,23 @@ div.row.tricks_list {
     border: 1px solid #d9d9d9;
     border-top: 0;
 }
+
 .tricks .tricks_nav .tricks_name {
     font-size: 24px;
 }
-
+/* End of Tricks Home display  */
 footer {
     min-height: 100px;
     background-color: rgb(50, 87, 133);
     color: white;
 }
-/* For mobile */
+
 @media screen and (max-width: 576px) {
-    header .navbar-nav a i {
-        display: block!important;
+    header .mobile_menu {
+        display: block;
     }
 
-    header .navbar-nav a span {
-        display: none!important;
-    }
-
-    header .navbar-nav {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    header .navbar-nav  .nav-item.register {
-        display: none;
-    }
-
-    header .img-container {
+    header .main_menu {
         display: none;
     }
 }
