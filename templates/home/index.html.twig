@@ -1,9 +1,21 @@
 {% extends 'base.html.twig' %}
+{% import 'macros/alertes.html.twig' as utils %}
 
 {% block additionnal_stylesheets %}
 {% endblock %}
 
 {% block body %}
+  <header id="homepage">
+    {% include 'menu/main_nav.html.twig' with {'position': 'fixed-top'} %}
+
+    <div class="to-tricks">
+      <a href="#tricks_list">
+        <i class="bi bi-arrow-down-circle-fill"></i>
+      </a>
+    </div>
+  </header>
+  {{ utils.alert('Ceci est un message d\'alerte !', 'danger') }}
+
   <div class="container my-5" id="tricks_list">
     <div class="row tricks_list">
       {# foreach tricks, display #}

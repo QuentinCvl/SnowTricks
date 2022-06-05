@@ -8,12 +8,15 @@
 
 header {
     width: 100%;
+    position: relative;
+}
+
+header#homepage {
     height: 100vh;
     background-image: url("/img/banner.png");
     background-position: center;
     background-size: cover;
     background-color: #212529;
-    position: relative;
 }
 
 header .navbar .navbar-brand img.logo {
@@ -27,6 +30,11 @@ header .navbar .navbar-nav a {
 header .navbar .navbar-nav a:hover {
     color: white;
 }
+
+.navbar.main_menu.static {
+    background-color: rgb(50, 87, 133);
+}
+
 /* Mobile menu */
 header .mobile_menu {
     display: none;
@@ -43,6 +51,7 @@ header .mobile_menu .navbar-nav {
     width: 100%;
     justify-content: space-between;
 }
+
 /* End of Mobile menu */
 .to-tricks {
     position: absolute;
@@ -59,9 +68,10 @@ header .mobile_menu .navbar-nav {
     font-size: 50px;
     color: #868e96;
 }
+
 /* Tricks Home display  */
 div.row.tricks_list {
-    justify-content: space-between;
+    justify-content: center;
 }
 
 .tricks {
@@ -86,6 +96,35 @@ div.row.tricks_list {
 .tricks .tricks_nav .tricks_name {
     font-size: 24px;
 }
+
+/* Trick Detail */
+.trickDetail_image_container {
+    position: relative;
+    text-align: center;
+    color: white;
+}
+
+.trickDetail_image_container .trickDetail_image {
+
+}
+
+.trickDetail_image_container .trickDetail_title_container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0,0,0,0.8);
+    padding: 10px;
+}
+
+.trickDetail .content p {
+    font-size: 22px;
+}
+
+.trickDetail_image_container .trickDetail_title_container span{
+    font-size: 3vh;
+}
+/* End of Trick Detail */
 /* End of Tricks Home display  */
 footer {
     min-height: 100px;

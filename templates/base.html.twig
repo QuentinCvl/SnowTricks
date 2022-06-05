@@ -21,17 +21,6 @@
           crossorigin="anonymous"></script>
 </head>
 <body>
-{% import 'macros/alertes.html.twig' as utils %}
-<header>
-  {% include 'menu/main_nav.html.twig' %}
-
-  <div class="to-tricks">
-    <a href="#tricks_list">
-      <i class="bi bi-arrow-down-circle-fill"></i>
-    </a>
-  </div>
-</header>
-{{ utils.alert('Ceci est un message d\'alerte !', 'danger') }}
 {% block body %}{% endblock %}
 <script type="application/javascript" src="{{ asset('js/main.js') }}"></script>
 {% block additionnal_javascripts %}
