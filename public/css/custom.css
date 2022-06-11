@@ -117,6 +117,63 @@ div.row.tricks_list {
     padding: 10px;
 }
 
+.multi-carousel {
+    position: relative;
+}
+
+.multi-carousel .multi-carousel-inner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 0;
+}
+
+.multi-carousel .multi-carousel-inner .multi-carousel-item {
+    display: inline-block;
+    width: 33.33%;
+    font-size: 16px;
+    -webkit-transition: all .3s ease-out;
+    transition: all .3s ease-out;
+    padding: 0 3px;
+}
+
+.lightbox img:not(.lightbox-disabled) {
+    cursor: zoom-in;
+}
+
+.multi-carousel .multi-carousel-inner .multi-carousel-item img {
+    max-height: 200px;
+    -o-object-fit: cover;
+    object-fit: cover;
+}
+
+.carousel-control-next, .carousel-control-prev {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 15%;
+    padding: 0;
+    color: #fff;
+    text-align: center;
+    background: none;
+    border: 0;
+    opacity: .5;
+    transition: opacity .15s ease;
+}
+
+.carousel-control-prev {
+    left: 0;
+}
+
+.carousel-control-next {
+    right: 0;
+}
+
 .trickDetail .content p {
     font-size: 22px;
 }

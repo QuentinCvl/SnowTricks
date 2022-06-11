@@ -12,12 +12,50 @@
       </div>
     </div>
 
+    {# MEdia #}
+    <div class="lightbox">
+      <div class="multi-carousel">
+        <div class="multi-carousel-inner">
+          <div class="multi-carousel-item">
+            <img
+                src="https://mdbcdn.b-cdn.net/img/Photos/Thumbnails/Slides/1.webp"
+                data-mdb-img="https://mdbcdn.b-cdn.net/img/Photos/Slides/1.webp"
+                alt="Table Full of Spices"
+                class="w-100"
+            />
+          </div>
+          <div class="multi-carousel-item">
+            <img
+                src="https://mdbcdn.b-cdn.net/img/Photos/Thumbnails/Slides/2.webp"
+                data-mdb-img="https://mdbcdn.b-cdn.net/img/Photos/Slides/2.webp"
+                alt="Winter Landscape"
+                class="w-100"
+            />
+          </div>
+          <div class="multi-carousel-item">
+            <img
+                src="https://mdbcdn.b-cdn.net/img/Photos/Thumbnails/Slides/3.webp"
+                data-mdb-img="https://mdbcdn.b-cdn.net/img/Photos/Slides/3.webp"
+                alt="View of the City in the Mountains"
+                class="w-100"
+            />
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" tabindex="0" data-mdb-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-control-next" type="button" tabindex="0" data-mdb-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
+
     <div class="content my-3">
       <p>{{ trick.content }}</p>
     </div>
 
     <ul class="list-group list-group-horizontal justify-content-evenly">
-      <li class="list-group-item">Catégorie : </li>
+      <li class="list-group-item">Catégorie :</li>
       <li class="list-group-item">Crée le : {{ trick.createdAt | date('d/m/Y') }}</li>
       {# If it was updated, display : #}
       <li class="list-group-item">Modifié le : {{ trick.updatedAt | date('d/m/Y') }}</li>
@@ -35,8 +73,13 @@
         <button type="submit" class="btn btn-outline-secondary mb-3">Soumettre le commentaire</button>
       </div>
     </form>
+
     <hr>
     {# endif #}
 
   </div>
+{% endblock %}
+
+{% block additionnal_javascripts %}
+  <script src="{{ asset('js/multi-carrousel.js') }}" type="text/javascript"></script>
 {% endblock %}
