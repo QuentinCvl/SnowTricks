@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-  <header>
+  <header xmlns="http://www.w3.org/1999/html">
     {% include 'menu/main_nav.html.twig' with {'position': 'static'} %}
   </header>
   <div class="container trickDetail my-5">
@@ -13,32 +13,22 @@
     </div>
 
     {# MEdia #}
-    <div class="lightbox">
+    <div class="lightbox my-3">
       <div class="multi-carousel">
         <div class="multi-carousel-inner">
           <div class="multi-carousel-item">
-            <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/Thumbnails/Slides/1.webp"
-                data-mdb-img="https://mdbcdn.b-cdn.net/img/Photos/Slides/1.webp"
-                alt="Table Full of Spices"
-                class="w-100"
-            />
+            <img src="https://dummyimage.com/365x160" class="w-100"/>
           </div>
           <div class="multi-carousel-item">
-            <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/Thumbnails/Slides/2.webp"
-                data-mdb-img="https://mdbcdn.b-cdn.net/img/Photos/Slides/2.webp"
-                alt="Winter Landscape"
-                class="w-100"
-            />
+            <img src="https://dummyimage.com/365x160" class="w-100"/>
           </div>
           <div class="multi-carousel-item">
-            <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/Thumbnails/Slides/3.webp"
-                data-mdb-img="https://mdbcdn.b-cdn.net/img/Photos/Slides/3.webp"
-                alt="View of the City in the Mountains"
-                class="w-100"
-            />
+            <img src="https://dummyimage.com/365x160" class="w-100"/>
+          </div>
+          <div class="multi-carousel-item">
+            <video class="w-100" autoplay="autoplay" controls>
+              <source src="{{ asset('img/snowTrick.mp4') }}" type="video/mp4"/>
+            </video>
           </div>
         </div>
         <button class="carousel-control-prev" type="button" tabindex="0" data-mdb-slide="prev">
@@ -76,6 +66,15 @@
 
     <hr>
     {# endif #}
+
+    <span>Commentaires : </span><br/>
+    {% if tricks|length > 0 %}
+      {% for commentary in commentaries %}
+        <p>{{ commentary.content }}</p>
+      {% endfor %}
+    {% else %}
+      {{ utils.alert('Pas de commentaire', 'info') }}
+    {% endif %}
 
   </div>
 {% endblock %}

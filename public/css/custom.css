@@ -142,10 +142,12 @@ div.row.tricks_list {
     cursor: zoom-in;
 }
 
-.multi-carousel .multi-carousel-inner .multi-carousel-item img {
-    max-height: 200px;
+.multi-carousel .multi-carousel-inner .multi-carousel-item img,
+.multi-carousel .multi-carousel-inner .multi-carousel-item video {
+    max-height: 160px;
     -o-object-fit: cover;
     object-fit: cover;
+    vertical-align: baseline;
 }
 
 .carousel-control-next, .carousel-control-prev {

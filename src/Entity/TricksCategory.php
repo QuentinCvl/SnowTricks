@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TricksCategoryRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,49 +12,50 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class TricksCategory
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+  /**
+   * @ORM\Id
+   * @ORM\GeneratedValue
+   * @ORM\Column(type="integer")
+   */
+  private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
+  /**
+   * @ORM\Column(type="string", length=255)
+   */
+  private $name;
 
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $detail;
+  /**
+   * @ORM\Column(type="text")
+   */
+  private $detail;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
+  public function getId(): ?int
+  {
+    return $this->id;
+  }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
+  public function getName(): ?string
+  {
+    return $this->name;
+  }
 
-        return $this;
-    }
+  public function setName(string $name): self
+  {
+    $this->name = $name;
 
-    public function getDetail(): ?string
-    {
-        return $this->detail;
-    }
+    return $this;
+  }
 
-    public function setDetail(string $detail): self
-    {
-        $this->detail = $detail;
+  public function getDetail(): ?string
+  {
+    return $this->detail;
+  }
 
-        return $this;
-    }
+  public function setDetail(string $detail): self
+  {
+    $this->detail = $detail;
+
+    return $this;
+  }
 }

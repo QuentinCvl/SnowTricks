@@ -10,100 +10,102 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class TricksComment
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+  /**
+   * @ORM\Id
+   * @ORM\GeneratedValue
+   * @ORM\Column(type="integer")
+   */
+  private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $trickId;
+  /**
+   * @ORM\ManyToOne(targetEntity=Trick::class, inversedBy="trickComments")
+   * @ORM\JoinColumn(nullable=false)
+   */
+  private $trick;
 
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $userId;
+  /**
+   * @ORM\ManyToOne(targetEntity=User::class)
+   * @ORM\JoinColumn(nullable=false)
+   */
+  private $user;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $parentId;
+  /**
+   * @ORM\OneToOne(targetEntity=TricksComment::class, cascade={"persist", "remove"})
+   */
+  private $parent;
 
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $content;
+  /**
+   * @ORM\Column(type="text")
+   */
+  private $content;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
+  /**
+   * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+   */
+  private $createdAt;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+  public function getId(): ?int
+  {
+    return $this->id;
+  }
 
-    public function getTrickId(): ?int
-    {
-        return $this->trickId;
-    }
+  public function getTrick(): ?Trick
+  {
+    return $this->trick;
+  }
 
-    public function setTrickId(int $trickId): self
-    {
-        $this->trickId = $trickId;
+  public function setTrick(?Trick $trick): self
+  {
+    $this->trick = $trick;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getUserId(): ?int
-    {
-        return $this->userId;
-    }
+  public function getUser(): ?User
+  {
+    return $this->user;
+  }
 
-    public function setUserId(int $userId): self
-    {
-        $this->userId = $userId;
+  public function setUser(?User $user): self
+  {
+    $this->user = $user;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getParentId(): ?int
-    {
-        return $this->parentId;
-    }
+  public function getParent(): ?self
+  {
+    return $this->parent;
+  }
 
-    public function setParentId(?int $parentId): self
-    {
-        $this->parentId = $parentId;
+  public function setParent(?self $parent): self
+  {
+    $this->parent = $parent;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getContent(): ?string
-    {
-        return $this->content;
-    }
+  public function getContent(): ?string
+  {
+    return $this->content;
+  }
 
-    public function setContent(string $content): self
-    {
-        $this->content = $content;
+  public function setContent(string $content): self
+  {
+    $this->content = $content;
 
-        return $this;
-    }
+    return $this;
+  }
 
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
+  public function getCreatedAt(): ?\DateTimeInterface
+  {
+    return $this->createdAt;
+  }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
-    {
-        $this->createdAt = $createdAt;
+  public function setCreatedAt(\DateTimeInterface $createdAt): self
+  {
+    $this->createdAt = $createdAt;
 
-        return $this;
-    }
+    return $this;
+  }
 }
