@@ -20,9 +20,9 @@ class TricksController extends AbstractController
       'controller_name' => 'TricksController',
       'title' => 'Figure n°'. $trick->getId(),
       'trick' => $trick,
-      'commentaries' => $trick->getTrickComments(),
+      /*'commentaries' => $trick->getTrickComments(),
       'images' => $trick->getTrickImages(),
-      'videos' => $trick->getTrickVideos()
+      'videos' => $trick->getTrickVideos()*/
 
     ]);
   }

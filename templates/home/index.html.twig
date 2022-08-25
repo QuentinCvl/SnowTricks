@@ -20,7 +20,8 @@
       {% if tricks|length > 0 %}
         {% for trick in tricks %}
           <div class="card col-lg-4 mb-5 mx-3 tricks">
-            <img src="https://dummyimage.com/300x200" class="card-img-top img-fluid" alt="...">
+            <img src="{{asset('upload/')}}{{ trick.trickImages.first.src}}" class="card-img-top img-fluid"
+                 alt="...">
             <div class="card-body">
               <a href="{{ path('tricks_detail', {'slug': trick.slug }) }}">
                 <h5 class="card-title">{{ trick.name }}</h5>

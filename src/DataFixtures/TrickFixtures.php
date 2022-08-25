@@ -6,80 +6,88 @@ use App\Entity\Trick;
 Use App\Entity\TricksCategory;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\String\Slugger\AsciiSlugger;
 use Faker;
 
-class TrickFixtures extends Fixture
+class TrickFixtures extends Fixture implements DependentFixtureInterface
 {
   public function load(ObjectManager $manager): void
   {
-    $faker = Faker\Factory::create('FR_fr');
+    $faker = Faker\Factory::create('fr_FR');
 
     // Generate 10 Tricks
     $tricks = [
       array(
         "name" => "Front flip",
-        "category" => 2
+        "category" => "Flips"
       ),
       array(
         "name" => "Back flip",
-        "category" => 2
+        "category" => "Flips"
       ),
       array(
         "name" => "Air to Fakie",
-        "category" => 7
+        "category" => "Half pipes"
       ),
       array(
         "name" => "Cork",
-        "category" => 4
+        "category" => "Rotations désaxées"
       ),
       array(
         "name" => "Grab Indy",
-        "category" => 6
+        "category" => "Grabs"
       ),
       array(
         "name" => "Lipslide",
-        "category" => 3
+        "category" => "Slides"
       ),
       array(
         "name" => "Noseslide",
-        "category" => 3
+        "category" => "Slides"
       ),
       array(
         "name" => "Rodeoback",
-        "category" => 5
+        "category" => "Rotations"
       ),
       array(
         "name" => "Underflip",
-        "category" => 1
+        "category" => "indéfini"
       ),
       array(
         "name" => "Stalefish",
-        "category" => 6
+        "category" => "Grabs"
       )
     ];
 
-    for ($i = 1; $i <= count($tricks); $i++) {
+    for ($i = 0; $i < count($tricks); $i++) {
       $trickName = $tricks[$i]['name'];
 
       $slugger = new AsciiSlugger();
       $slug = $slugger->slug($trickName);
 
-      $content = '<p>';
-      $content .= join($faker->paragraphs(5), '<p></p>');
-      $content .= '</p>';
+      $content = '<p>'. join("<p></p>", $faker->paragraphs()) .'</p>';
 
       $trick = new Trick();
       $trick->setName($trickName)
         ->setSlug($slug)
         ->setContent($content)
-        ->setCategory($tricks[$i]['category'])
-        ->setCreatedAt($faker->dateTimeBetween('-3 mouths'));
+        ->setCategory($this->getReference($tricks[$i]['category']))
+        ->setCreatedAt($faker->dateTimeBetween('-6 weeks', 'now'));
 
       $manager->persist($trick);
+
+      $this->addReference($tricks[$i]['name'], $trick);
     }
 
     $manager->flush();
+  }
+
+  public function getDependencies(): array
+  {
+    return [
+      TricksCategoryFixtures::class,
+    ];
   }
 }

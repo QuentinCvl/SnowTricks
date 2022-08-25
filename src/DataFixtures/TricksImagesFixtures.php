@@ -2,76 +2,78 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Trick;
 use App\Entity\TricksImages;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 
-class TricksImagesFixtures extends Fixture
+class TricksImagesFixtures extends Fixture implements DependentFixtureInterface
 {
   public function load(ObjectManager $manager): void
   {
     $images = array(
       array(
-        "trick_id" => 1, //"Front flip"
-        "src" => "flip/frontflip.jpg",
-        "position" => 1
+        "trick" => "Front flip",
+        "images" => ["flip/frontflip.jpg"],
       ),
       array(
-        "trick_id" => 2, //"Back flip"
-        "src" => "flip/frontflip.jpg",
-        "position" => 1
+        "trick" => "Back flip",
+        "images" => ["flip/backflip.jpg"],
       ),
       array(
-        "trick_id" => 3, //"Air to Fakie"
-        "src" => "half-pipes/air_fakie.jpg",
-        "position" => 1
+        "trick" => "Air to Fakie",
+        "images" => ["half-pipes/air_fakie.jpg"],
       ),
       array(
-        "trick_id" => 4, //"Cork"
-        "src" => "rotations-desaxees/cork.jpg",
-        "position" => 1
+        "trick" => "Cork",
+        "images" => ["rotations-desaxees/cork.jpg"],
       ),
       array(
-        "trick_id" => 5, //"Grab Indy"
-        "src" => "grab/grab-indy.jpeg",
-        "position" => 1
+        "trick" => "Grab Indy",
+        "images" => ["grab/grab-indy.jpeg"],
       ),
       array(
-        "trick_id" => 6, //"Lipslide"
-        "src" => "slides/lipslide.jpeg",
-        "position" => 1
+        "trick" => "Lipslide",
+        "images" => ["slides/lipslide.jpeg"],
       ),
       array(
-        "trick_id" => 7, //"Noseslide"
-        "src" => "slides/noseslide.jpeg",
-        "position" => 1
+        "trick" => "Noseslide",
+        "images" => ["slides/noseslide.jpeg"],
       ),
       array(
-        "trick_id" => 8, //"Rodeoback"
-        "src" => "rotations/rodeoback.jpeg",
-        "position" => 1
+        "trick" => "Rodeoback",
+        "images" => ["rotations/rodeoback.jpeg"]
       ),
       array(
-        "trick_id" => 9, //"Underflip"
-        "src" => "undefined/underflip.jpeg",
-        "position" => 1
+        "trick" => "Underflip",
+        "images" => ["undefined/underflip.jpeg"]
       ),
       array(
-        "trick_id" => 10, //"Stalefish"
-        "src" => "grab/stalefish.jpg",
-        "position" => 1
+        "trick" => "Stalefish",
+        "images" => ["grab/stalefish.jpg"]
       )
     );
 
-    for ($i = 1; $i <= count($images); $i++) {
+    for ($i = 0; $i < count($images); $i++) {
       $img = new TricksImages();
-      $img->setTrickId($images[$i]['trick_id'])
-        ->setSrc($images[$i]['src'])
-        ->setPosition($images[$i]['position']);
+      $img->setTrick($this->getReference($images[$i]['trick']));
+
+      for ($j = 0; $j < count($images[$i]["images"]); $j++) {
+        $img->setSrc($images[$i]["images"][$j])
+          ->setPosition($j + 1);
+      }
 
       $manager->persist($img);
     }
 
     $manager->flush();
+  }
+
+  public function getDependencies(): array
+  {
+    return [
+      TrickFixtures::class,
+    ];
   }
 }

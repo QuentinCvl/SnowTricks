@@ -42,13 +42,16 @@ class TricksCategoryFixtures extends Fixture
       )
     );
 
-    for ($i = 1; $i <= count($categories); $i++) {
+    for ($i = 0; $i <= count($categories) - 1; $i++) {
       $category = new TricksCategory();
       $category->setName($categories[$i]['name'])
         ->setDetail($categories[$i]['detail']);
 
       $manager->persist($category);
+
+      $this->addReference($categories[$i]['name'], $category);
     }
+
     $manager->flush();
   }
 }
