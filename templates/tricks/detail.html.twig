@@ -5,42 +5,70 @@
   <header xmlns="http://www.w3.org/1999/html">
     {% include 'menu/main_nav.html.twig' with {'position': 'static'} %}
   </header>
-  <div class="container trickDetail my-5">
+  <div class="container mainContent trickDetail my-3">
+    {% for message in app.flashes('newSuccess') %}
+      <div class="alert alert-success">
+        {{ message }}
+      </div>
+    {% endfor %}
     <div class="trickDetail_image_container">
-      <img class="trickDetail_image" src="{{ asset('upload/') }}{{ trick.trickImages.first.src }}"
-           alt="{{ trick.name }}" style="width:100%;">
+      {% if trick.trickImages is empty %}
+        <img class="trickDetail_image" src="https://via.placeholder.com/1100x550"
+             alt="{{ trick.name }}" style="width:100%;">
+        {% else %}
+        <img class="trickDetail_image" src="{{ asset('upload/') }}{{ trick.trickImages.first.src }}"
+             alt="{{ trick.name }}" style="width:100%;">
+      {% endif %}
       <div class="trickDetail_title_container">
         <span>{{ trick.name }}</span>
       </div>
+      {% if app.user %}
+      <div class="trickDetail_action">
+        <a href="{{ path('trick_update', {'slug': trick.slug }) }}"
+           class="text-reset text-decoration-none">
+          <i class="bi bi-pen-fill"></i>
+        </a>
+        <a href="{{ path('trick_delete', {'id': trick.id }) }}"
+           class="text-reset text-decoration-none">
+          <i class="bi bi-trash3-fill"></i>
+        </a>
+      </div>
+      {% endif %}
     </div>
 
-    {# MEdia #}
-    <div class="lightbox my-3">
-      <div class="multi-carousel">
-        <div class="multi-carousel-inner">
-          <div class="multi-carousel-item">
-            <img src="https://dummyimage.com/365x160" class="w-100"/>
+    {# Media Carroussel #}
+    {% if trick.trickImages|length <= 1 and trick.trickVideos|length == 0 %}
+      {{ utils.alertNoDismiss('Pas d\'autres médias', 'secondary') }}
+    {% else %}
+      <div class="lightbox my-3">
+        <div class="multi-carousel">
+          <div class="multi-carousel-inner text-center">
+            {% if trick.trickImages|length > 1 %}
+              {% for image in trick.trickImages %}
+                <div class="multi-carousel-item">
+                  <img src="{{ asset('upload/') }}{{ image.src }}" class="w-100"/>
+                </div>
+              {% endfor %}
+            {% endif %}
+            {% if trick.trickVideos|length > 0 %}
+              <div class="multi-carousel-item">
+                <video class="w-100" autoplay="autoplay" controls>
+                  <source src="{{ asset('upload/') }}{{ trick.trickVideos.first.src }}" type="video/mp4"/>
+                </video>
+              </div>
+            {% endif %}
           </div>
-          <div class="multi-carousel-item">
-            <img src="https://dummyimage.com/365x160" class="w-100"/>
-          </div>
-          <div class="multi-carousel-item">
-            <img src="https://dummyimage.com/365x160" class="w-100"/>
-          </div>
-          <div class="multi-carousel-item">
-            <video class="w-100" autoplay="autoplay" controls>
-              <source src="{{ asset('img/snowTrick.mp4') }}" type="video/mp4"/>
-            </video>
-          </div>
+          {% if (trick.trickImages|length + trick.trickVideos|length) > 3 %}
+            <button class="carousel-control-prev" type="button" tabindex="0" data-mdb-slide="prev">
+              <span class="carousel-control-prev-icon bg-black" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" tabindex="0" data-mdb-slide="next">
+              <span class="carousel-control-next-icon bg-black" aria-hidden="true"></span>
+            </button>
+          {% endif %}
         </div>
-        <button class="carousel-control-prev" type="button" tabindex="0" data-mdb-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        </button>
-        <button class="carousel-control-next" type="button" tabindex="0" data-mdb-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        </button>
       </div>
-    </div>
+    {% endif %}
 
     <div class="content my-3">
       <p>{{ trick.content | striptags('<p>') | raw }}</p>
@@ -57,75 +85,63 @@
 
     <hr>
     {# If user is connected #}
-    <form class="row g-3 justify-content-center">
+    {% if app.user %}
+    {{ form_start(formComment, {'attr': {'class': 'row g-3 justify-content-center'}}) }}
+    <div class="col-8">
+      <label for="comment" class="visually-hidden">Commentaire :</label>
+      {{ form_row(formComment.content, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-outline-secondary mb-3">Soumettre le commentaire</button>
+    </div>
+    {{ form_end(formComment) }}
+    {% else %}
+    <div class="row g-3 justify-content-center">
       <div class="col-8">
-        <label for="comment" class="visually-hidden">Password</label>
-        <input type="text" class="form-control" id="comment">
+        <label for="comment" class="visually-hidden">Commentaire :</label>
+        <input type="text" class="form-control" id="comment" disabled
+               placeholder="Vous devez être connecté pour pouvoir mettre un commentaire">
       </div>
       <div class="col-auto">
-        <button type="submit" class="btn btn-outline-secondary mb-3">Soumettre le commentaire</button>
+        <button type="button" class="btn btn-outline-secondary mb-3 disabled">Soumettre le commentaire</button>
       </div>
-    </form>
-
+    </div>
+    {% endif %}
     <hr>
-    {# endif #}
 
     {% if trick.trickComments|length > 0 %}
-      <span>Commentaires : </span><br/>
-      <div class="container mt-5">
+      <div class="container">
         <div class="d-flex justify-content-center row">
           {% for commentary in trick.trickComments %}
 
-            <div class="col-md-8">
+            <div class="commentary col-md-8 mb-3 position-relative">
               <div class="d-flex flex-column comment-section">
                 <div class="bg-white p-2">
                   <div class="d-flex flex-row user-info">
-                    <img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40">
+                    <i class="rounded-circle bi bi-person-circle"></i>
                     <div class="d-flex flex-column justify-content-start ml-2">
-                      <span class="d-block font-weight-bold name">Marry Andrews</span>
-                      <span class="date text-black-50">Shared publicly - Jan 2020</span>
+                      <span class="d-block font-weight-bold name">{{ commentary.user.username }}</span>
+                      <span
+                          class="date text-black-50">Publié le - {{ commentary.createdAt | format_datetime(locale='fr',pattern="EEEE dd MMMM YYYY") }}</span>
                     </div>
                   </div>
                   <div class="mt-2">
-                    <p class="comment-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                      eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                      quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                  </div>
-                </div>
-                <div class="bg-white">
-                  <div class="d-flex flex-row fs-12">
-                    <div class="like p-2 cursor">
-                      <i class="fa fa-thumbs-o-up"></i>
-                      <span class="ml-1">Like</span>
-                    </div>
-                    <div class="like p-2 cursor">
-                      <i class="fa fa-commenting-o"></i>
-                      <span class="ml-1">Comment</span>
-                    </div>
-                    <div class="like p-2 cursor">
-                      <i class="fa fa-share"></i>
-                      <span class="ml-1">Share</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="bg-light p-2">
-                  <div class="d-flex flex-row align-items-start">
-                    <img class="rounded-circle" src="https://i.imgur.com/RpzrMR2.jpg" width="40">
-                    <textarea class="form-control ml-1 shadow-none textarea"></textarea>
-                  </div>
-                  <div class="mt-2 text-right">
-                    <button class="btn btn-primary btn-sm shadow-none" type="button">Post comment</button>
-                    <button class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Cancel
-                    </button>
+                    <p class="comment-text">{{ commentary.content }}</p>
                   </div>
                 </div>
               </div>
+              {% if app.user == commentary.user %}
+              <a href="{{ path('comment_delete', {'id': commentary.id }) }}"
+                 class="text-reset text-decoration-none position-absolute top-0" style="right: 0">
+                <i class="bi bi-trash3-fill" style="font-size: 25px"></i>
+              </a>
+              {% endif %}
             </div>
           {% endfor %}
         </div>
       </div>
     {% else %}
-      {{ utils.alert('Pas de commentaire', 'info') }}
+      {{ utils.alertNoDismiss('Pas de commentaire', 'secondary') }}
     {% endif %}
 
   </div>

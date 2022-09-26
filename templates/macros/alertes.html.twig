@@ -1,6 +1,12 @@
 {% macro alert(message, type) %}
-  <div class="alert alert-{{ type }} alert-dismissible fade show w-50 mt-3 m-auto text-center" role="alert">
+  <div class="alert alert-{{ type }} alert-dismissible fade show w-50 my-3 m-auto text-center" role="alert">
     {{ message }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+{% endmacro%}
+
+{% macro alertNoDismiss(message, type) %}
+  <div class="alert alert-{{ type }} fade show w-50 my-3 m-auto text-center" role="alert">
+    {{ message }}
   </div>
 {% endmacro%}

@@ -53,6 +53,9 @@ header .mobile_menu .navbar-nav {
 }
 
 /* End of Mobile menu */
+.container.mainContent {
+    min-height: calc(100vh - 200px)!important;
+}
 .to-tricks {
     position: absolute;
     bottom: 60px;
@@ -77,6 +80,12 @@ div.row.tricks_list {
 .tricks {
     width: 18rem;
     box-shadow: 4px -4px 12px 0 #2b2b2b;
+    padding: 0;
+}
+
+.tricks img.img-fluid {
+    width: 100%;
+    height: 200px
 }
 
 .tricks .card-body {
@@ -97,12 +106,25 @@ div.row.tricks_list {
     font-size: 24px;
 }
 
+.tricks_edit, .tricks .tricks_delete {
+    color: unset;
+    text-decoration: unset;
+}
 /* Trick Detail */
 .trickDetail_image_container {
     position: relative;
     text-align: center;
     color: white;
 }
+
+.trickDetail_image_container .trickDetail_action {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(0,0,0,0.8);
+    padding: 10px;
+}
+
 
 .trickDetail_image_container .trickDetail_image {
 
@@ -182,6 +204,16 @@ div.row.tricks_list {
 
 .trickDetail_image_container .trickDetail_title_container span{
     font-size: 3vh;
+}
+
+.commentary i {
+    width: 40px;
+    font-size: 35px;
+    margin-right: 20px;
+}
+
+.commentary {
+    box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.35);
 }
 /* End of Trick Detail */
 /* End of Tricks Home display  */

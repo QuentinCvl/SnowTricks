@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+{% import 'macros/alertes.html.twig' as utils %}
+
+{% form_theme formTrick 'bootstrap_5_layout.html.twig' %}
+
+{% block body %}
+  <header xmlns="http://www.w3.org/1999/html">
+    {% include 'menu/main_nav.html.twig' with {'position': 'static'} %}
+  </header>
+
+  <div class="container mainContent my-3">
+    <h1>
+      {% if exist %}
+        Modification d'une figure
+      {% else %}
+        Création d'une figure
+      {% endif %}
+    </h1>
+
+    {{ form_start(formTrick) }}
+
+
+    {{ form_row(formTrick.name, { 'label': 'Nom' }) }}
+    {{ form_row(formTrick.content, { 'label': 'Contenu' }) }}
+
+    <div class="mb-3">
+      {{ form_label(formTrick.category, 'Catégorie') }}
+      {{ form_errors(formTrick.category) }}
+      {{ form_widget(formTrick.category) }}
+      <div id="emailHelp" class="form-text">Choisissez une catégorie dans la liste.</div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Enregistrer</button>
+
+    {{ form_end(formTrick) }}
+
+  </div>
+{% endblock %}

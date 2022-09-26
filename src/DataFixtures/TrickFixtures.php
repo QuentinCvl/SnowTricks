@@ -3,7 +3,6 @@
 namespace App\DataFixtures;
 
 use App\Entity\Trick;
-Use App\Entity\TricksCategory;
 
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;

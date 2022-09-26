@@ -30,11 +30,6 @@ class TricksComment
   private $user;
 
   /**
-   * @ORM\OneToOne(targetEntity=TricksComment::class, cascade={"persist", "remove"})
-   */
-  private $parent;
-
-  /**
    * @ORM\Column(type="text")
    */
   private $content;
@@ -69,18 +64,6 @@ class TricksComment
   public function setUser(?User $user): self
   {
     $this->user = $user;
-
-    return $this;
-  }
-
-  public function getParent(): ?self
-  {
-    return $this->parent;
-  }
-
-  public function setParent(?self $parent): self
-  {
-    $this->parent = $parent;
 
     return $this;
   }
