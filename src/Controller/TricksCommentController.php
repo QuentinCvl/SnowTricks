@@ -13,7 +13,7 @@ class TricksCommentController extends AbstractController
   /**
    * @Route("/comment/delete/{id}", name="comment_delete")
    */
-    public function index(TricksComment $comment, ManagerRegistry $managerRegistry): Response
+    public function delete(TricksComment $comment, ManagerRegistry $managerRegistry): Response
     {
       $slug = $comment->getTrick()->getSlug();
       $manager = $managerRegistry->getManager();

@@ -6,7 +6,9 @@ use App\Repository\TrickRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
  * @ORM\Entity(repositoryClass=TrickRepository::class)
@@ -40,9 +42,44 @@ class Trick
   private $content;
 
   /**
+   * @ORM\Column(type="string", nullable=true)
+   */
+  private $mainPicture;
+
+  /**
+   * @Assert\Image(
+   *   mimeTypes= {"image/jpeg", "image/jpg", "image/png"},
+   *   mimeTypesMessage= "Veuillez insérer une image en .jpg, .jpeg ou .png",
+   *   minWidth= 300,
+   *   minWidthMessage= "Image trop petite. Largeur minimal 300px",
+   *   minHeight= 200,
+   *   minHeightMessage="Image trop petite. Hauteur minimal 200px",
+   *   maxSize= "2M",
+   *   maxSizeMessage="Image trop volumineuse. Taille maximal 2 Mo"
+   * )
+   */
+  private $mainPictureFile;
+
+  /**
+   * @ORM\Column(type="string", nullable=true, options={"default": NULL})
+   */
+  private $video;
+
+  /**
+   * @Assert\File(
+   *   mimeTypes={"video/mp4", "video/x-m4v", "video/*"},
+   *   mimeTypesMessage="Veuillez insérer une video dans un format valide",
+   *   maxSize= "150M",
+   *   maxSizeMessage="Video trop volumineuse. Taille maximal 150 Mo"
+   * )
+   */
+  private $videoFile;
+
+  /**
    * @ORM\ManyToOne(targetEntity=TricksCategory::class)
    */
   private $category;
+
 
   /**
    * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
@@ -60,14 +97,23 @@ class Trick
   private $deletedAt;
 
   /**
-   * @ORM\OneToMany(targetEntity=TricksImages::class, mappedBy="trick", orphanRemoval=true)
+   * @ORM\OneToMany(targetEntity=TricksImages::class, mappedBy="trick", orphanRemoval=true,
+   *   cascade={"persist"})
    */
-  private $trickImages;
+  private $tricksImages;
 
   /**
-   * @ORM\OneToMany(targetEntity=TricksVideos::class, mappedBy="trick", orphanRemoval=true)
+   * @Assert\Image(
+   *   mimeTypes= {"image/jpeg", "image/jpg", "image/png"},
+   *   mimeTypesMessage= "Veuillez insérer une image en .jpg, .jpeg ou .png",
+   *   minWidth= 300,
+   *   minWidthMessage= "Image trop petite. Largeur minimal 300px",
+   *   minHeight= 200,
+   *   minHeightMessage="Image trop petite. Hauteur minimal 200px"
+   * )
    */
-  private $trickVideos;
+  private $images;
+
 
   /**
    * @ORM\OneToMany(targetEntity=TricksComment::class, mappedBy="trick", orphanRemoval=true)
@@ -76,8 +122,7 @@ class Trick
 
   public function __construct()
   {
-      $this->trickImages = new ArrayCollection();
-      $this->trickVideos = new ArrayCollection();
+      $this->tricksImages = new ArrayCollection();
       $this->trickComments = new ArrayCollection();
   }
 
@@ -118,6 +163,54 @@ class Trick
   public function setContent(string $content): self
   {
     $this->content = $content;
+
+    return $this;
+  }
+
+  public function getMainPicture(): ?string
+  {
+    return $this->mainPicture;
+  }
+
+  public function setMainPicture($mainPicture): self
+  {
+    $this->mainPicture = $mainPicture;
+
+    return $this;
+  }
+
+  public function getMainPictureFile()
+  {
+    return $this->mainPictureFile;
+  }
+
+  public function setMainPictureFile(UploadedFile $mainPictureFile): self
+  {
+    $this->mainPictureFile = $mainPictureFile;
+
+    return $this;
+  }
+
+  public function getVideo(): ?string
+  {
+    return $this->video;
+  }
+
+  public function setVideo(string $video): self
+  {
+    $this->video = $video;
+
+    return $this;
+  }
+
+  public function getVideoFile()
+  {
+    return $this->videoFile;
+  }
+
+  public function setVideoFile(UploadedFile $videoFile): self
+  {
+    $this->videoFile = $videoFile;
 
     return $this;
   }
@@ -173,15 +266,15 @@ class Trick
   /**
    * @return Collection<int, TricksImages>
    */
-  public function getTrickImages(): Collection
+  public function getTricksImages(): Collection
   {
-      return $this->trickImages;
+      return $this->tricksImages;
   }
 
   public function addTrickImage(TricksImages $trickImage): self
   {
-      if (!$this->trickImages->contains($trickImage)) {
-          $this->trickImages[] = $trickImage;
+      if (!$this->tricksImages->contains($trickImage)) {
+          $this->tricksImages[] = $trickImage;
           $trickImage->setTrick($this);
       }
 
@@ -190,40 +283,10 @@ class Trick
 
   public function removeTrickImage(TricksImages $trickImage): self
   {
-      if ($this->trickImages->removeElement($trickImage)) {
+      if ($this->tricksImages->removeElement($trickImage)) {
           // set the owning side to null (unless already changed)
           if ($trickImage->getTrick() === $this) {
               $trickImage->setTrick(null);
-          }
-      }
-
-      return $this;
-  }
-
-  /**
-   * @return Collection<int, TricksVideos>
-   */
-  public function getTrickVideos(): Collection
-  {
-      return $this->trickVideos;
-  }
-
-  public function addTrickVideo(TricksVideos $trickVideo): self
-  {
-      if (!$this->trickVideos->contains($trickVideo)) {
-          $this->trickVideos[] = $trickVideo;
-          $trickVideo->setTrick($this);
-      }
-
-      return $this;
-  }
-
-  public function removeTrickVideo(TricksVideos $trickVideo): self
-  {
-      if ($this->trickVideos->removeElement($trickVideo)) {
-          // set the owning side to null (unless already changed)
-          if ($trickVideo->getTrick() === $this) {
-              $trickVideo->setTrick(null);
           }
       }
 

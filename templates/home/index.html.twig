@@ -23,37 +23,84 @@
     <div class="row tricks_list">
       {% if tricks|length > 0 %}
         {% for trick in tricks %}
-          <div class="card col-lg-4 mb-5 mx-3 tricks">
-            {% if trick.trickImages is empty %}
-              <img src="https://via.placeholder.com/300x200" class="card-img-top img-fluid"
-                   alt="{{ trick.name }}">
-            {% else %}
-              <img src="{{ asset('upload/') }}{{ trick.trickImages.first.src }}"
-                   class="card-img-top img-fluid"
-                   alt="{{ trick.name }}">
-            {% endif %}
-            <div class="card-body">
-              <a href="{{ path('trick_detail', {'slug': trick.slug }) }}">
-                <h5 class="card-title">{{ trick.name }}</h5>
-              </a>
-              {% if app.user %}
-              <div>
-                <a href="{{ path('trick_update', {'slug': trick.slug }) }}"
-                   class="text-reset text-decoration-none">
-                  <i class="bi bi-pen-fill"></i>
-                </a>
-                <a href="{{ path('trick_delete', {'id': trick.id }) }}"
-                   class="text-reset text-decoration-none">
-                  <i class="bi bi-trash3-fill"></i>
-                </a>
-              </div>
+          {% if trick.deletedAt is null %}
+            <div class="card col-lg-4 mb-5 mx-3 tricks">
+              {% if trick.mainPicture is null %}
+                <img src="https://via.placeholder.com/300x200" class="card-img-top img-fluid"
+                     alt="{{ trick.name }}">
+              {% else %}
+                <img src="{{ asset('upload/') }}{{ trick.mainPicture }}"
+                     class="card-img-top img-fluid"
+                     alt="{{ trick.name }}">
               {% endif %}
+              <div class="card-body">
+                <a href="{{ path('trick_detail', {'slug': trick.slug }) }}">
+                  <h5 class="card-title">{{ trick.name }}</h5>
+                </a>
+                {% if app.user %}
+                  <div>
+                    <a href="{{ path('trick_update', {'slug': trick.slug }) }}"
+                       class="text-reset text-decoration-none">
+                      <i class="bi bi-pen-fill"></i>
+                    </a>
+                    <a href="{{ path('trick_delete', {'id': trick.id }) }}"
+                       class="text-reset text-decoration-none">
+                      <i class="bi bi-trash3-fill"></i>
+                    </a>
+                  </div>
+                {% endif %}
+              </div>
             </div>
-          </div>
+          {% endif %}
         {% endfor %}
       {% else %}
         {{ utils.alert('Pas de figure à afficher pour le moment, revenez plus tard !', 'danger') }}
       {% endif %}
     </div>
+
+    <section>
+      {% if pagination.nbPages > 1 %}
+        <ul class="pagination justify-content-center mt-2">
+          {% if pagination.page > 1 %}
+            {% if (pagination.page - 1) > 1 %}
+              <li class="page-item">
+                <a class="page-link" href="{{ path('home', {'page': 1}) }}">
+                  &laquo;
+                </a>
+              </li>
+            {% endif %}
+            <li class="page-item">
+              <a class="page-link" href="{{ path('home', {'page': pagination.page -1}) }}">
+                <
+              </a>
+            </li>
+          {% endif %}
+
+          {# Affichage de toutes les pages entre p-3 et p+3 sauf si < 1 ou > nbPages #}
+          {% for p in range(max(pagination.page-3, 1), min(pagination.page+3, pagination.nbPages)) %}
+            <li {% if p == pagination.page %}class="page-item active"{% endif %}>
+              <a class="page-link" href="{{ path('home', {'page': p}) }}">
+                {{ p }}
+              </a>
+            </li>
+          {% endfor %}
+
+          {% if pagination.page < pagination.nbPages %}
+            <li class="page-item">
+              <a class="page-link" href="{{ path('home', {'page': pagination.page+1}) }}">
+                >
+              </a>
+            </li>
+            {% if (pagination.page + 1) < pagination.nbPages %}
+              <li class="page-item">
+                <a class="page-link" href="{{ path('home', {'page': pagination.nbPages}) }}">
+                  &raquo;
+                </a>
+              </li>
+            {% endif %}
+          {% endif %}
+        </ul>
+      {% endif %}
+    </section>
   </div>
 {% endblock %}

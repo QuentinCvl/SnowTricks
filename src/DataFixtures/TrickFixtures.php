@@ -20,43 +20,63 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
     $tricks = [
       array(
         "name" => "Front flip",
-        "category" => "Flips"
+        "category" => "Flips",
+        "mainPicture" => "frontflip.jpg",
+        "video" => "snowTrick.mp4"
       ),
       array(
         "name" => "Back flip",
-        "category" => "Flips"
+        "category" => "Flips",
+        "mainPicture" => "backflip.jpg",
+        "video" => ""
       ),
       array(
         "name" => "Air to Fakie",
-        "category" => "Half pipes"
+        "category" => "Half pipes",
+        "mainPicture" => "air_fakie.jpg",
+        "video" => ""
       ),
       array(
         "name" => "Cork",
-        "category" => "Rotations désaxées"
+        "category" => "Rotations désaxées",
+        "mainPicture" => "cork.jpg",
+        "video" => ""
       ),
       array(
         "name" => "Grab Indy",
-        "category" => "Grabs"
+        "category" => "Grabs",
+        "mainPicture" => "grab-indy.jpeg",
+        "video" => ""
       ),
       array(
         "name" => "Lipslide",
-        "category" => "Slides"
+        "category" => "Slides",
+        "mainPicture" => "lipslide.jpeg",
+        "video" => ""
       ),
       array(
         "name" => "Noseslide",
-        "category" => "Slides"
+        "category" => "Slides",
+        "mainPicture" => "noseslide.jpeg",
+        "video" => ""
       ),
       array(
         "name" => "Rodeoback",
-        "category" => "Rotations"
+        "category" => "Rotations",
+        "mainPicture" => "rodeoback.jpeg",
+        "video" => ""
       ),
       array(
         "name" => "Underflip",
-        "category" => "indéfini"
+        "category" => "indéfini",
+        "mainPicture" => "underflip.jpeg",
+        "video" => ""
       ),
       array(
         "name" => "Stalefish",
-        "category" => "Grabs"
+        "category" => "Grabs",
+        "mainPicture" => "stalefish.jpg",
+        "video" => ""
       )
     ];
 
@@ -72,8 +92,13 @@ class TrickFixtures extends Fixture implements DependentFixtureInterface
       $trick->setName($trickName)
         ->setSlug($slug)
         ->setContent($content)
+        ->setMainPicture($tricks[$i]['mainPicture'])
         ->setCategory($this->getReference($tricks[$i]['category']))
         ->setCreatedAt($faker->dateTimeBetween('-6 weeks', 'now'));
+
+      if($tricks[$i]['video']) {
+        $trick->setVideo($tricks[$i]['video']);
+      }
 
       $manager->persist($trick);
 

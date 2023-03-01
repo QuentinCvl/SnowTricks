@@ -15,43 +15,7 @@ class TricksImagesFixtures extends Fixture implements DependentFixtureInterface
     $images = array(
       array(
         "trick" => "Front flip",
-        "images" => ["flip/frontflip.jpg"],
-      ),
-      array(
-        "trick" => "Back flip",
-        "images" => ["flip/backflip.jpg"],
-      ),
-      array(
-        "trick" => "Air to Fakie",
-        "images" => ["half-pipes/air_fakie.jpg"],
-      ),
-      array(
-        "trick" => "Cork",
-        "images" => ["rotations-desaxees/cork.jpg"],
-      ),
-      array(
-        "trick" => "Grab Indy",
-        "images" => ["grab/grab-indy.jpeg"],
-      ),
-      array(
-        "trick" => "Lipslide",
-        "images" => ["slides/lipslide.jpeg"],
-      ),
-      array(
-        "trick" => "Noseslide",
-        "images" => ["slides/noseslide.jpeg"],
-      ),
-      array(
-        "trick" => "Rodeoback",
-        "images" => ["rotations/rodeoback.jpeg"]
-      ),
-      array(
-        "trick" => "Underflip",
-        "images" => ["undefined/underflip.jpeg"]
-      ),
-      array(
-        "trick" => "Stalefish",
-        "images" => ["grab/stalefish.jpg"]
+        "images" => ["frontflip2.jpg"]
       )
     );
 
@@ -60,8 +24,7 @@ class TricksImagesFixtures extends Fixture implements DependentFixtureInterface
       $img->setTrick($this->getReference($images[$i]['trick']));
 
       for ($j = 0; $j < count($images[$i]["images"]); $j++) {
-        $img->setSrc($images[$i]["images"][$j])
-          ->setPosition($j + 1);
+        $img->setSrc($images[$i]["images"][$j]);
       }
 
       $manager->persist($img);

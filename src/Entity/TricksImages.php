@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\TricksImagesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=TricksImagesRepository::class)
@@ -29,9 +31,16 @@ class TricksImages
   private $src;
 
   /**
-   * @ORM\Column(type="integer", nullable=true)
+   * @Assert\Image(
+   *   mimeTypes= {"image/jpeg", "image/jpg", "image/png"},
+   *   mimeTypesMessage= "Veuillez insérer une image en .jpg, .jpeg ou .png",
+   *   minWidth= 300,
+   *   minWidthMessage= "Image trop petite. Largeur minimal 300px",
+   *   minHeight= 200,
+   *   minHeightMessage="Image trop petite. Hauteur minimal 200px"
+   * )
    */
-  private $position;
+  private $imageFile;
 
   public function getId(): ?int
   {
@@ -62,15 +71,18 @@ class TricksImages
     return $this;
   }
 
-  public function getPosition(): ?int
+  public function getImageFile()
   {
-    return $this->position;
+    return $this->imageFile;
   }
 
-  public function setPosition(?int $position): self
+  /**
+   * @param UploadedFile $file
+   * @return TricksImages
+   */
+  public function setImageFile(UploadedFile $file): self
   {
-    $this->position = $position;
-
+    $this->imageFile = $file;
     return $this;
   }
 }

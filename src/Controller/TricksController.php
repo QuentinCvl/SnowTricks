@@ -3,28 +3,19 @@
 namespace App\Controller;
 
 use App\Entity\Trick;
-use App\Entity\TricksCategory;
 use App\Entity\TricksComment;
 use App\Entity\TricksImages;
-use App\Entity\TricksVideos;
 
-use App\Entity\User;
 use App\Form\TricksCommentType;
 use App\Form\TrickType;
+use App\Service\FileManager;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormTypeInterface;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\AsciiSlugger;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TricksController extends AbstractController
 {
@@ -34,9 +25,7 @@ class TricksController extends AbstractController
   public function index(Trick $trick, Request $request, ManagerRegistry $managerRegistry): Response
   {
     $comment = new TricksComment();
-    $form = $this->createForm(TricksCommentType::class, null, [
-      "attr" => ["class" => "form-control"]
-    ]);
+    $form = $this->createForm(TricksCommentType::class);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
@@ -53,7 +42,7 @@ class TricksController extends AbstractController
     }
 
     return $this->render('tricks/detail.html.twig', [
-      'title' => 'Figure n°' . $trick->getId(),
+      'title' => $trick->getName(),
       'trick' => $trick,
       'formComment' => $form->createView()
     ]);
@@ -63,8 +52,8 @@ class TricksController extends AbstractController
    * @Route("/trick/creer", name="trick_create")
    * @Route("/trick/{slug}/modifier", name="trick_update")
    */
-  public function tricksForm(Trick $trick = null, Request $request, ManagerRegistry $managerRegistry):
-  Response
+  public function tricksForm(Trick $trick = null, Request $request, ManagerRegistry $managerRegistry,
+                             SluggerInterface $slugger): Response
   {
     if (!$trick) {
       $trick = new Trick();
@@ -75,18 +64,53 @@ class TricksController extends AbstractController
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
-      $slugger = new AsciiSlugger();
-      $slug = $slugger->slug($trick->getName());
-      $trick->setSlug($slug);
-      $trick->setCreatedAt(new \DateTime());
+      $trick->setSlug($slugger->slug($trick->getName()));
+      // If new add created date, else update the updated date
+      if(!$trick->getId()) {
+        $trick->setCreatedAt(new \DateTime());
+      } else {
+        $trick->setUpdatedAt(new \DateTime());
+      }
+      // mainPicture
+      $mainPicture = $form->get('mainPictureFile')->getData();
+      if($mainPicture) {
+        $fileManager = new FileManager($this->getParameter('images_directory'));
+        $fileName = $fileManager->upload($mainPicture);
+        $fileManager->delete($trick->getMainPicture());
+        $trick->setMainPicture($fileName);
+      }
+
+      // video
+      $video = $form->get('videoFile')->getData();
+      if($video) {
+        $fileManager = new FileManager($this->getParameter('images_directory'));
+        $fileName = $fileManager->upload($video);
+        $fileManager->delete($trick->getVideo());
+        $trick->setVideo($fileName);
+      }
+
+      // Collection TricksImages
+      $images = $form->get('images')->getData();
+      foreach ($images as $img) {
+        $fileManager = new FileManager($this->getParameter('images_directory'));
+        $fileName = $fileManager->upload($img);
+        // Persist on new TricksImages
+        $newTricksImages = new TricksImages();
+        $newTricksImages
+          ->setTrick($trick)
+          ->setSrc($fileName);
+
+        $trick->addTrickImage($newTricksImages);
+      }
 
       $manager = $managerRegistry->getManager();
       $manager->persist($trick);
       $manager->flush();
 
+
       $this->addFlash(
         'newSuccess',
-        'Création du tricks : ' . $trick->getName() . ' [OK]'
+        'Création du tricks : ' . $trick->getName()
       );
 
       return $this->redirectToRoute("trick_detail", ["slug" => $trick->getSlug()]);
@@ -94,18 +118,22 @@ class TricksController extends AbstractController
 
     return $this->render('tricks/form.html.twig', [
       'title' => 'Creation d\'une figure',
+      'trick' => $trick,
       "formTrick" => $form->createView(),
       "exist" => $trick->getId() !== null
     ]);
   }
 
   /**
+   * Soft delete
    * @Route("/trick/delete/{id}", name="trick_delete")
    */
   public function deleteTrick(Trick $trick, ManagerRegistry $managerRegistry): Response
   {
+    $trick->setDeletedAt(new \DateTime());
+
     $manager = $managerRegistry->getManager();
-    $manager->remove($trick);
+    $manager->persist($trick);
     $manager->flush();
 
     $this->addFlash(
@@ -114,5 +142,20 @@ class TricksController extends AbstractController
     );
 
     return $this->redirectToRoute("home");
+  }
+
+  /**
+   * @Route("/tricksImages/delete/{id}", name="tricksImages_delete")
+   */
+  public function deleteTricksImages(TricksImages $tricksImages, ManagerRegistry $managerRegistry): Response
+  {
+    $fileManager = new FileManager($this->getParameter('images_directory'));
+    $fileManager->delete($tricksImages->getSrc());
+
+    $manager = $managerRegistry->getManager();
+    $manager->remove($tricksImages);
+    $manager->flush();
+
+    return $this->redirectToRoute("trick_update", ['slug' => $tricksImages->getTrick()->getSlug()]);
   }
 }

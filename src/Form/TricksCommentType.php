@@ -10,11 +10,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TricksCommentType extends AbstractType
 {
-  public function buildForm(FormBuilderInterface $builder, array $options)
+  public function buildForm(FormBuilderInterface $builder, array $options = [])
   {
-    $options = [];
-
-    $builder->add("content", TextType::class, ["label" => false]);
+    $builder->add("content", TextType::class,
+      [
+        "label" => false,
+        "attr" => ["class" => "form-control"]
+      ]
+    );
   }
 
   public function configureOptions(OptionsResolver $resolver)

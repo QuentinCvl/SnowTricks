@@ -12,53 +12,53 @@
       </div>
     {% endfor %}
     <div class="trickDetail_image_container">
-      {% if trick.trickImages is empty %}
-        <img class="trickDetail_image" src="https://via.placeholder.com/1100x550"
-             alt="{{ trick.name }}" style="width:100%;">
-        {% else %}
-        <img class="trickDetail_image" src="{{ asset('upload/') }}{{ trick.trickImages.first.src }}"
-             alt="{{ trick.name }}" style="width:100%;">
+      {% if trick.mainPicture is null %}
+        {% set src = "https://via.placeholder.com/1100x550" %}
+      {% else %}
+        {% set src =  asset('upload/') ~ trick.mainPicture %}
       {% endif %}
+      <img class="trickDetail_image w-100" src="{{ src }}" alt="{{ trick.name }}">
       <div class="trickDetail_title_container">
         <span>{{ trick.name }}</span>
       </div>
       {% if app.user %}
-      <div class="trickDetail_action">
-        <a href="{{ path('trick_update', {'slug': trick.slug }) }}"
-           class="text-reset text-decoration-none">
-          <i class="bi bi-pen-fill"></i>
-        </a>
-        <a href="{{ path('trick_delete', {'id': trick.id }) }}"
-           class="text-reset text-decoration-none">
-          <i class="bi bi-trash3-fill"></i>
-        </a>
-      </div>
+        <div class="trickDetail_action">
+          <a href="{{ path('trick_update', {'slug': trick.slug }) }}"
+             class="text-reset text-decoration-none">
+            <i class="bi bi-pen-fill"></i>
+          </a>
+          <a href="{{ path('trick_delete', {'id': trick.id }) }}"
+             class="text-reset text-decoration-none">
+            <i class="bi bi-trash3-fill"></i>
+          </a>
+        </div>
       {% endif %}
     </div>
 
     {# Media Carroussel #}
-    {% if trick.trickImages|length <= 1 and trick.trickVideos|length == 0 %}
+    {% if trick.tricksImages|length + trick.video is not null == 0 %}
       {{ utils.alertNoDismiss('Pas d\'autres médias', 'secondary') }}
     {% else %}
       <div class="lightbox my-3">
         <div class="multi-carousel">
           <div class="multi-carousel-inner text-center">
-            {% if trick.trickImages|length > 1 %}
-              {% for image in trick.trickImages %}
+            {% if trick.tricksImages|length %}
+              ok
+              {% for image in trick.tricksImages %}
                 <div class="multi-carousel-item">
-                  <img src="{{ asset('upload/') }}{{ image.src }}" class="w-100"/>
+                  <img src="{{ asset('upload/') }}{{ image.src }}" alt="" class="w-100"/>
                 </div>
               {% endfor %}
             {% endif %}
-            {% if trick.trickVideos|length > 0 %}
+            {% if trick.video %}
               <div class="multi-carousel-item">
                 <video class="w-100" autoplay="autoplay" controls>
-                  <source src="{{ asset('upload/') }}{{ trick.trickVideos.first.src }}" type="video/mp4"/>
+                  <source src="{{ asset('upload/') }}{{ trick.video }}" type="video/mp4"/>
                 </video>
               </div>
             {% endif %}
           </div>
-          {% if (trick.trickImages|length + trick.trickVideos|length) > 3 %}
+          {% if trick.tricksImages|length + trick.video is not null > 3 %}
             <button class="carousel-control-prev" type="button" tabindex="0" data-mdb-slide="prev">
               <span class="carousel-control-prev-icon bg-black" aria-hidden="true"></span>
             </button>
@@ -86,26 +86,27 @@
     <hr>
     {# If user is connected #}
     {% if app.user %}
-    {{ form_start(formComment, {'attr': {'class': 'row g-3 justify-content-center'}}) }}
-    <div class="col-8">
-      <label for="comment" class="visually-hidden">Commentaire :</label>
-      {{ form_row(formComment.content, {'attr': {'class': 'form-control'}}) }}
-    </div>
-    <div class="col-auto">
-      <button type="submit" class="btn btn-outline-secondary mb-3">Soumettre le commentaire</button>
-    </div>
-    {{ form_end(formComment) }}
-    {% else %}
-    <div class="row g-3 justify-content-center">
+      {{ form_start(formComment, {'attr': {'class': 'row g-3 justify-content-center'}}) }}
       <div class="col-8">
         <label for="comment" class="visually-hidden">Commentaire :</label>
-        <input type="text" class="form-control" id="comment" disabled
-               placeholder="Vous devez être connecté pour pouvoir mettre un commentaire">
+        {{ form_row(formComment.content, {'attr': {'class': 'form-control'}}) }}
       </div>
       <div class="col-auto">
-        <button type="button" class="btn btn-outline-secondary mb-3 disabled">Soumettre le commentaire</button>
+        <button type="submit" class="btn btn-outline-secondary mb-3">Soumettre le commentaire</button>
       </div>
-    </div>
+      {{ form_end(formComment) }}
+    {% else %}
+      <div class="row g-3 justify-content-center">
+        <div class="col-8">
+          <label for="comment" class="visually-hidden">Commentaire :</label>
+          <input type="text" class="form-control" id="comment" disabled
+                 placeholder="Vous devez être connecté pour pouvoir mettre un commentaire">
+        </div>
+        <div class="col-auto">
+          <button type="button" class="btn btn-outline-secondary mb-3 disabled">Soumettre le commentaire
+          </button>
+        </div>
+      </div>
     {% endif %}
     <hr>
 
@@ -131,10 +132,10 @@
                 </div>
               </div>
               {% if app.user == commentary.user %}
-              <a href="{{ path('comment_delete', {'id': commentary.id }) }}"
-                 class="text-reset text-decoration-none position-absolute top-0" style="right: 0">
-                <i class="bi bi-trash3-fill" style="font-size: 25px"></i>
-              </a>
+                <a href="{{ path('comment_delete', {'id': commentary.id }) }}"
+                   class="text-reset text-decoration-none position-absolute top-0" style="right: 0">
+                  <i class="bi bi-trash3-fill" style="font-size: 25px"></i>
+                </a>
               {% endif %}
             </div>
           {% endfor %}

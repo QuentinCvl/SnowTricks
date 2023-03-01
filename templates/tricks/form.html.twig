@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import 'macros/alertes.html.twig' as utils %}
 
+{# {% form_theme formTrick 'tricks/form/_collection.html.twig' %} #}
 {% form_theme formTrick 'bootstrap_5_layout.html.twig' %}
 
 {% block body %}
@@ -9,30 +10,96 @@
   </header>
 
   <div class="container mainContent my-3">
-    <h1>
+    <h1 class="h2 mb-3">
       {% if exist %}
-        Modification d'une figure
+        Modification de la figure {{ formTrick.vars.value.name }}
       {% else %}
         Création d'une figure
       {% endif %}
     </h1>
 
     {{ form_start(formTrick) }}
-
-
-    {{ form_row(formTrick.name, { 'label': 'Nom' }) }}
-    {{ form_row(formTrick.content, { 'label': 'Contenu' }) }}
+    {{ form_row(formTrick.name) }}
 
     <div class="mb-3">
-      {{ form_label(formTrick.category, 'Catégorie') }}
-      {{ form_errors(formTrick.category) }}
+      {{ form_label(formTrick.content) }}
+      {{ form_errors(formTrick.content) }}
+      {{ form_widget(formTrick.content) }}
+      <div id="emailHelp" class="form-text">Ajoutez &lt;p>&lt;/p> autour d'un paragraphe afin de l'afficher
+        lors du rendu.
+      </div>
+    </div>
+
+    <div class="mb-3">
+      {{ form_label(formTrick.category) }}
       {{ form_widget(formTrick.category) }}
       <div id="emailHelp" class="form-text">Choisissez une catégorie dans la liste.</div>
     </div>
 
+    {% if trick.mainPicture|length %}
+      <div class="row mb-3">
+        {{ form_label(formTrick.mainPictureFile) }}
+        <div class="col">
+          <div class="card mb-3 w-50">
+            <img src="{{ asset('upload/') }}{{ trick.mainPicture }}" class="card-img-top" alt="...">
+          </div>
+        </div>
+        <div class="col">
+          <p>Remplacer l'image ?</p>
+          {{ form_errors(formTrick.mainPictureFile) }}
+          {{ form_widget(formTrick.mainPictureFile) }}
+          <div id="emailHelp" class="form-text">Choisissez une nouvelle image principale, ou ne faite rien pour
+            garder celle actuelle.
+          </div>
+        </div>
+      </div>
+    {% else %}
+      {{ form_row(formTrick.mainPictureFile) }}
+    {% endif %}
+
+    {% if trick.video|length %}
+      <div class="row mb-3">
+        {{ form_label(formTrick.videoFile) }}
+        <div class="col">
+          <div class="card mb-3 w-50">
+            <video class="card-img-top" autoplay="autoplay" controls>
+              <source src="{{ asset('upload/') }}{{ trick.video }}" type="video/mp4"/>
+            </video>
+          </div>
+        </div>
+        <div class="col">
+          <p>Remplacer la video ?</p>
+          {{ form_errors(formTrick.videoFile) }}
+          {{ form_widget(formTrick.videoFile) }}
+          <div id="emailHelp" class="form-text">Choisissez une nouvelle vidéo, ou ne faite rien pour
+            garder celle actuelle.
+          </div>
+        </div>
+      </div>
+    {% else %}
+      {{ form_row(formTrick.videoFile) }}
+    {% endif %}
+
+    <div class="mb-3">
+      {{ form_label(formTrick.images) }}
+      <div class="images">
+        {% if trick.tricksImages|length > 0 %}
+          {% for image in trick.tricksImages %}
+            <div class="card mb-3 w-25">
+              <img src="{{ asset('upload/') }}{{ image.src }}" class="card-img-top" alt="...">
+              <div class="btn-close-container">
+                <a href="{{ path('tricksImages_delete', {'id': image.id }) }}" >
+                  <button type="button" class="btn-close btn-close-white" aria-label="Close"></button>
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      {{ form_widget(formTrick.images) }}
+    </div>
+
     <button type="submit" class="btn btn-success">Enregistrer</button>
-
     {{ form_end(formTrick) }}
-
   </div>
 {% endblock %}

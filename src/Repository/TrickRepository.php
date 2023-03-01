@@ -6,7 +6,10 @@ use App\Entity\Trick;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use InvalidArgumentException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @extends ServiceEntityRepository<Trick>
@@ -23,10 +26,6 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function add(Trick $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
@@ -35,10 +34,6 @@ class TrickRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function remove(Trick $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);
@@ -47,6 +42,45 @@ class TrickRepository extends ServiceEntityRepository
         }
     }
 
+  /**
+   * @param $page
+   * @param $maxPerPage
+   * @return Paginator
+   */
+    public function getTrickPaginator($page, $maxPerPage): Paginator
+    {
+      if (!is_numeric($page)) {
+        throw new InvalidArgumentException(
+          'La valeur de l\'argument $page est incorrecte (valeur : ' . $page . ').'
+        );
+      }
+
+      if ($page < 1) {
+        throw new NotFoundHttpException('La page demandée n\'existe pas');
+      }
+
+      if (!is_numeric($maxPerPage)) {
+        throw new InvalidArgumentException(
+          'La valeur de l\'argument $maxPerPage est incorrecte (valeur : ' . $maxPerPage . ').'
+        );
+      }
+
+      $qb = $this->createQueryBuilder('a')
+        ->where('CURRENT_DATE() >= a.createdAt')
+        ->orderBy('a.createdAt', 'DESC');
+
+      $query = $qb->getQuery();
+
+      $firstResult = ($page - 1) * $maxPerPage;
+      $query->setFirstResult($firstResult)->setMaxResults($maxPerPage);
+      $paginator = new Paginator($query);
+
+      if (($paginator->count() <= $firstResult) && $page != 1) {
+        throw new NotFoundHttpException('La page demandée n\'existe pas.');
+      }
+
+      return $paginator;
+    }
     // /**
     //  * @return Trick[] Returns an array of Trick objects
     //  */
